@@ -1,3 +1,4 @@
 [
-	{ "keys": ["super+shift+m"], "command": "select_translate" }
+	{ "keys": ["super+shift+m"], "command": "select_translate" },
+	{ "keys": ["super+shift+alt+m"], "command": "select_translate_reverse" }
 ]
