@@ -1,11 +1,10 @@
 # -*- coding:utf-8 -*-
-import sys
 import sublime, sublime_plugin
-import thread
+import sys
+import threading
 import json
 import urllib
 import urllib2
-
 import xml.dom.minidom        
 
 reload(sys)
@@ -15,27 +14,30 @@ sys.setdefaultencoding("utf-8")
 #Bing translator
 class BingTranslatorSettings:
 	view_id = None
-	
+	settings = None
+	thread = None
 	oauth_end_point="https://datamarket.accesscontrol.windows.net/v2/OAuth2-13";
 	translate_end_point = "http://api.microsofttranslator.com/v2/Http.svc/Translate"
-       
 	client_id = "SublimeBingTranslator"
 	client_secret = "0fjvxMgcSZreEk9xPN8Vse+KDz3XlI+W11XJxC8peEA="
 	scope = "http://api.microsofttranslator.com"
 	grant_type = "client_credentials"
 
-	#Translator Language Codes
-	#http://msdn.microsoft.com/en-us/library/hh456380.aspx
-	_from = "en"
-	to = "ja"
 
 #global settings
 settings = BingTranslatorSettings()
 
 class BingTranslator:
+	def __call__(self, command, edit, source_text, _from, to):
+		sublime.set_timeout(lambda: sublime.status_message("translate...."), 100)
+		token = self.getOAuthToken()
+		translated = self.doTranslate(source_text, _from, to, token)
+		sublime.set_timeout(lambda:self.show_result(edit, source_text, translated), 100)
+	def result(self, text):
+		sublime.status_message(text)
 	def translate(self, command, edit, _from, to):
+		global settings
 		sublime.status_message("start translate...")
-		#todo create thread
 		sels = command.view.sel()
 		source_text = ""
 		last_sel = None
@@ -43,15 +45,14 @@ class BingTranslator:
 			source_text += command.view.substr(sel)+" "
 			last_sel = sel
 		if len(source_text) == 1:
-			sublime.status_message("not selected. do not translate")
+			sublime.status_message("not selected. can't translate.")
 			return
-		sublime.status_message("get token...")
-		token = self.getOAuthToken()
-		sublime.status_message("translate...")
-		translated = self.doTranslate(source_text, _from, to, token)
-
-		self.showResult(edit, source_text, translated)
-		sublime.status_message("translate end...")
+		if settings.thread != None and settings.thread.isAlive() == True:
+			sublime.status_message("already translate now. wait please.")
+			return
+		settings.thread = threading.Thread(target=self, args=(command, edit, source_text, _from, to,))
+		settings.thread.setDaemon(True)
+		settings.thread.start()
 	def getResultView(self):
 		global settings
 		active_window = sublime.active_window()
@@ -63,7 +64,7 @@ class BingTranslator:
 		new_view.set_name("Bing Transrator Results.")
 		return new_view
 
-	def showResult(self, edit, source_text, translated):
+	def show_result(self, edit, source_text, translated):
 		view = self.getResultView()
 		result = "*translate*\n"
 		result += "------------------------\n"
@@ -112,17 +113,26 @@ class BingTranslator:
 		return translated.encode("utf-8")
 
 class SelectTranslateReverseCommand(sublime_plugin.TextCommand):
+	translator = BingTranslator()
+	setting = None
+	def __init__(self, *args, **kwargs):
+		sublime_plugin.TextCommand.__init__(self, *args, **kwargs)
+		self.setting = sublime.load_settings("SublimeBingTranslator.sublime-settings");	
 	def run(self, edit):
 		global settings
-		BingTranslator().translate(self, edit, settings.to, settings._from)
+		self.translator.translate(self, edit, self.setting.get("to"), self.setting.get("from"))
 	def description(self, args):
 		return "bing translator plugin reverse"
 
 class SelectTranslateCommand(sublime_plugin.TextCommand):
 	translator = BingTranslator()
+	setting = None
+	def __init__(self, *args, **kwargs):
+		sublime_plugin.TextCommand.__init__(self, *args, **kwargs)
+		self.setting = sublime.load_settings("SublimeBingTranslator.sublime-settings");
 	def run(self, edit):
 		global settings
-		self.translator.translate(self, edit, settings._from, settings.to)
+		self.translator.translate(self, edit, self.setting.get("from"), self.setting.get("to"))
 	def description(self, args):
 		return "bing translator plugin"
 
