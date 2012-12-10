@@ -62,4 +62,14 @@ if you use frequently, recommend publishing API keys.
 Windows Azure Marketplace -Registering your application-<br/>
 [https://datamarket.azure.com/developer/applications/register](https://datamarket.azure.com/developer/applications/register)
 
+after published API keys.
+edit "SublimeBingTranslator.py"
 
+```
+class BingTranslatorSettings:
+     ~~ ~~ ~~
+	client_id = (new client id)
+	client_secret = (new client secret)
+     ~~ ~~ ~~
+     ...
+```
