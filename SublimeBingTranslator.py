@@ -14,7 +14,6 @@ sys.setdefaultencoding("utf-8")
 #Bing translator
 class BingTranslatorSettings:
 	view_id = None
-	settings = None
 	thread = None
 	oauth_end_point="https://datamarket.accesscontrol.windows.net/v2/OAuth2-13";
 	translate_end_point = "http://api.microsofttranslator.com/v2/Http.svc/Translate"
@@ -26,16 +25,30 @@ class BingTranslatorSettings:
 
 #global settings
 settings = BingTranslatorSettings()
+translate_settings = sublime.load_settings("SublimeBingTranslator.sublime-settings");	
 
 class BingTranslator:
 	def __call__(self, command, edit, source_text, _from, to):
+		"""
+		Translating text typed language.
+
+		Args:
+        	command: sublime text command object.
+        	edit: sublime text edit object.
+        	source_text: String to be translated.
+        	_from: Language of the string to translate.
+        	to: to Language.
+    	Returns:
+        	None.
+		"""
 		sublime.set_timeout(lambda: sublime.status_message("translate...."), 100)
-		token = self.getOAuthToken()
+		token = self.get_oauth_token()
 		translated = self.doTranslate(source_text, _from, to, token)
 		sublime.set_timeout(lambda:self.show_result(edit, source_text, translated), 100)
-	def result(self, text):
-		sublime.status_message(text)
 	def translate(self, command, edit, _from, to):
+		"""
+		
+		"""
 		global settings
 		sublime.status_message("start translate...")
 		sels = command.view.sel()
@@ -53,7 +66,8 @@ class BingTranslator:
 		settings.thread = threading.Thread(target=self, args=(command, edit, source_text, _from, to,))
 		settings.thread.setDaemon(True)
 		settings.thread.start()
-	def getResultView(self):
+
+	def get_result_view(self):
 		global settings
 		active_window = sublime.active_window()
 		for view in active_window.views():
@@ -65,7 +79,7 @@ class BingTranslator:
 		return new_view
 
 	def show_result(self, edit, source_text, translated):
-		view = self.getResultView()
+		view = self.get_result_view()
 		result = "*translate*\n"
 		result += "------------------------\n"
 		result += source_text + "\n"
@@ -76,7 +90,7 @@ class BingTranslator:
 		view.insert(edit, 0, result)
 
 		sublime.active_window().focus_view(view)
-	def getOAuthToken(self):
+	def get_oauth_token(self):
 		global settings
 		request_data = {}
 		request_data["client_id"] = settings.client_id
@@ -114,25 +128,24 @@ class BingTranslator:
 
 class SelectTranslateReverseCommand(sublime_plugin.TextCommand):
 	translator = BingTranslator()
-	setting = None
 	def __init__(self, *args, **kwargs):
 		sublime_plugin.TextCommand.__init__(self, *args, **kwargs)
-		self.setting = sublime.load_settings("SublimeBingTranslator.sublime-settings");	
 	def run(self, edit):
 		global settings
-		self.translator.translate(self, edit, self.setting.get("to"), self.setting.get("from"))
+		global translate_settings
+		self.translator.translate(self, edit, translate_settings.get("to"), translate_settings.get("from"))
 	def description(self, args):
 		return "bing translator plugin reverse"
 
 class SelectTranslateCommand(sublime_plugin.TextCommand):
 	translator = BingTranslator()
-	setting = None
 	def __init__(self, *args, **kwargs):
 		sublime_plugin.TextCommand.__init__(self, *args, **kwargs)
 		self.setting = sublime.load_settings("SublimeBingTranslator.sublime-settings");
 	def run(self, edit):
 		global settings
-		self.translator.translate(self, edit, self.setting.get("from"), self.setting.get("to"))
+		global translate_settings
+		self.translator.translate(self, edit, translate_settings.get("from"), translate_settings.get("to"))
 	def description(self, args):
 		return "bing translator plugin"
 
