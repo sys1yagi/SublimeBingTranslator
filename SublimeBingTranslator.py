@@ -47,7 +47,14 @@ class BingTranslator:
 		sublime.set_timeout(lambda:self.show_result(edit, source_text, translated), 100)
 	def translate(self, command, edit, _from, to):
 		"""
-		
+		スレッドで実行うんぬん...
+
+		Args:
+			command:
+			edit:
+			_from:
+			to:
+
 		"""
 		global settings
 		sublime.status_message("start translate...")
@@ -68,6 +75,10 @@ class BingTranslator:
 		settings.thread.start()
 
 	def get_result_view(self):
+		"""
+			To get the file to display the translation results.
+			start a thread and translate.
+		"""
 		global settings
 		active_window = sublime.active_window()
 		for view in active_window.views():
