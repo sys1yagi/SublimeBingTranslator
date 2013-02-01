@@ -1,0 +1,11 @@
+[
+    {
+        "caption": "BingTranslator: Translate",
+        "command": "select_translate"
+    },
+    {
+        "caption": "BingTranslator: Reverse Translate",
+        "command": "select_translate_reverse"
+    }
+]
+
