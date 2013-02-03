@@ -87,6 +87,7 @@ class BingTranslator:
 		new_view = active_window.new_file()
 		settings.view_id = new_view.id()
 		new_view.set_name("Bing Transrator Results.")
+		new_view.set_scratch(translate_settings.get("scratch"))
 		return new_view
 
 	def show_result(self, edit, source_text, translated):

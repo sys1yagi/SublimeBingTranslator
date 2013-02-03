@@ -2,5 +2,6 @@
 	//Translator Language Codes
 	//http://msdn.microsoft.com/en-us/library/hh456380.aspx
     "from" : "en",
-    "to" : "ja"
+    "to" : "ja",
+    "scratch" : true
 }
