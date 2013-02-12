@@ -38,8 +38,7 @@ class BingTranslator:
         	source_text: String to be translated.
         	_from: Language of the string to translate.
         	to: to Language.
-    	Returns:
-        	None.
+    		Returns: None.
 		"""
 		sublime.set_timeout(lambda: sublime.status_message("translate...."), 100)
 		token = self.get_oauth_token()
@@ -47,8 +46,7 @@ class BingTranslator:
 		sublime.set_timeout(lambda:self.show_result(edit, source_text, translated), 100)
 	def translate(self, command, edit, _from, to):
 		"""
-		スレッドで実行うんぬん...
-
+		TODO
 		Args:
 			command:
 			edit:
