@@ -12,16 +12,16 @@
                 "children":
                 [
                     {
-                        "caption": "SublimeBingTranslator",
+                        "caption": "Bing Translator",
                         "children":
                         [
-                            { "command": "open_file", "args": {"file": "${packages}/SublimeBingTranslator/SublimeBingTranslator.sublime-settings"}, "caption": "Settings – Default" },
-                            { "command": "open_file", "args": {"file": "${packages}/User/SublimeBingTranslator.sublime-settings"}, "caption": "Settings – User" },
+                            { "command": "open_file", "args": {"file": "${packages}/Bing Translator/Bing Translator.sublime-settings"}, "caption": "Settings – Default" },
+                            { "command": "open_file", "args": {"file": "${packages}/User/Bing Translator.sublime-settings"}, "caption": "Settings – User" },
                             { "caption": "-" },
                             {
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/SublimeBingTranslator/Default (Windows).sublime-keymap",
+                                    "file": "${packages}/Bing Translator/Default (Windows).sublime-keymap",
                                     "platform": "Windows"
                                 },
                                 "caption": "Key Bindings – Default"
@@ -29,7 +29,7 @@
                             {
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/SublimeBingTranslator/Default (OSX).sublime-keymap",
+                                    "file": "${packages}/Bing Translator/Default (OSX).sublime-keymap",
                                     "platform": "OSX"
                                 },
                                 "caption": "Key Bindings – Default"
@@ -37,7 +37,7 @@
                             {
                                 "command": "open_file", "args":
                                 {
-                                    "file": "${packages}/SublimeBingTranslator/Default (Linux).sublime-keymap",
+                                    "file": "${packages}/Bing Translator/Default (Linux).sublime-keymap",
                                     "platform": "Linux"
                                 },
                                 "caption": "Key Bindings – Default"
