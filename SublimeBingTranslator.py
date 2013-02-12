@@ -25,7 +25,7 @@ class BingTranslatorSettings:
 
 #global settings
 settings = BingTranslatorSettings()
-translate_settings = sublime.load_settings("SublimeBingTranslator.sublime-settings");	
+translate_settings = sublime.load_settings("Bing Translator.sublime-settings");	
 
 class BingTranslator:
 	def __call__(self, command, edit, source_text, _from, to):
